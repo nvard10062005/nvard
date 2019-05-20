@@ -1,7 +1,8 @@
 
 //! Requiring modules  --  START
-var Grass = require("./modules/class.js");
-var GrassEater = require("./modules/eatgrass.js");
+var Grass = require("./modules/Grass.js");
+var GrassEater = require("./modules/GrassEater.js");
+var Predator = require("./modules/Predator.js")
 let random = require('./modules/random');
 //! Requiring modules  --  END
 
@@ -9,15 +10,17 @@ let random = require('./modules/random');
 //! Setting global arrays  --  START
 grassArr = [];
 grassEaterArr = [];
+predatorArr = [];
 matrix = [];
 grassHashiv = 0;
+predatorHashiv = 0;
 //! Setting global arrays  -- END
 
 
 
 
 //! Creating MATRIX -- START
-function matrixGenerator(matrixSize, grass, grassEater, grassEaterEater, waterArr, fireArr) {
+function matrixGenerator(matrixSize, grass, grassEater, predator, waterArr, fireArr) {
     for (let i = 0; i < matrixSize; i++) {
         matrix[i] = [];
         for (let o = 0; o < matrixSize; o++) {
@@ -34,7 +37,7 @@ function matrixGenerator(matrixSize, grass, grassEater, grassEaterEater, waterAr
         let customY = Math.floor(random(matrixSize));
         matrix[customY][customX] = 2;
     }
-    for (let i = 0; i < grassEaterEater; i++) {
+    for (let i = 0; i < predator; i++) {
         let customX = Math.floor(random(matrixSize));
         let customY = Math.floor(random(matrixSize));
         matrix[customY][customX] = 3;
@@ -50,7 +53,7 @@ function matrixGenerator(matrixSize, grass, grassEater, grassEaterEater, waterAr
         matrix[customY][customX] = 5;
     }
 }
-matrixGenerator(20, 1, 1);
+matrixGenerator(20, 1, 1,2);
 //! Creating MATRIX -- END
 
 
@@ -80,6 +83,11 @@ function creatingObjects() {
                 grassArr.push(grass);
                 grassHashiv++;
             }
+            else if (matrix[y][x] == 1) {
+                var predator = new Predator(x, y);
+                predatorArr.push(predator);
+                predatorHashiv++;
+            }
         }
     }
 }
@@ -96,11 +104,17 @@ function game() {
             grassEaterArr[i].eat();
         }
     }
+    if (predatorArr[0] !== undefined) {
+        for (var i in predatorArr) {
+            predatorArr[i].eat();
+        }
+    }
 
     //! Object to send
     let sendData = {
         matrix: matrix,
         grassCounter: grassHashiv
+        //predatorCounter: predatorCounter
     }
 
     //! Send data over the socket to clients who listens "data"
