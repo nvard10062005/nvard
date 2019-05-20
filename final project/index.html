@@ -2,92 +2,90 @@
 
 <head>
     <meta charset="utf8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="p5.js"></script>
-    <script src="class.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
-    <script src="eater.js"></script>
-    <script src="eatgrass.js"></script>
-    <script src="heroe.js"></script>
-    <script src="predator.js"></script>
     <style>
-        div{
-            display:inline-block;
+        canvas {
+            display: block;
+            margin: 0 auto;
         }
-    
+
+        div {
+            display: inline-block;
+        }
+
+        h1 {
+            padding: 20px;
+            text-align: center;
+        }
+
+        body {
+            font-family: 'Noto Sans', sans-serif !important;
+        }
+    </style>
     </style>
 </head>
 
-
 <body>
-    <div style="background-color:green; width:15px; height:15px"></div>Խոտ
-    <div style="background-color:orange; width:15px; height:15px"></div>Խոտակեր
-    <div style="background-color:#acacac; width:15px; height:15px"></div>Դատարկ տարածք<br><br>
-    <html>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <h1>Ծրագրավորում III Երևան</h1>
+            </tr>
+            <tr>
+                <h1>Նվարդ Մարտիրոսյան</h1>
+            </tr>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Գույն</th>
+                <th scope="col">Նկարագրություն</th>
+                <th scope="col">Ծնվել է</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td scope="row" style="background-color:green;"></td>
+                <td>Կանաչը խոտն է, որը բազմանում է N ցիկլը մեկ,մահանում է երբ նրան ուտում է խոտակերը, կամ այրում է
+                    կրակը, կամ նրան կոխկրտում է գիշատիչը</td>
+                <td id="garssCount"></td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td scope="row" style="background-color:orange;"></td>
+                <td>Դեղինը խոտակերն է, որը բազմանում է N հատ խոտ ուտելուց հետո և մահանում է N հատ չուտելուց հետո, կամ
+                    երբ նրան ուտում է գիշատիչը, կամ երբ նրան այրում է կրակը:</td>
+                <td id="garssEaterCount"></td>
+          
 
-<head>
-    <style>
-        #legend {position: absolute;top: 0;right: 0;width: 800px;} .legend-color {width: 30px;height: 30px;} td {border: 1px solid black; font-size: 14px; padding-left: 5x;}
-    </style>
-</head>
 
-<body>
-    <table id="legend">
+      
+      
         <tr>
-            <td class="legend-color">Գույն</td>
-            <td>Անվանում</td>
-            <td>Շարժվում է</td>
-            <td>Ուտում է</td>
-            <td>Բազմանում է</td>
-            <td>Սատկում է</td>
-        </tr>
-
-        <tr>
-            <td class="legend-color" style="background-color:gray"></td>
-            <td>Դատարկ վանդակներ</td>
+                <th scope="row">3</th>
+                <td scope="row" style="background-color:red;"></td>
+        
+            <td>Կարմիրը,գիշատիչն է, որը բազմանում է N հատ խոտակեր ուտելուց հետո և մահանում է N հատ չուտելուց հետո, կամ
+                    երբ նրան ուտում է heroe,:</td>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+           
         </tr>
         <tr>
-            <td class="legend-color" style="background-color:green"></td>
-            <td>Խոտ</td>
-            <td></td>
-            <td></td>
-            <td>Մոտակա 8 վանդակներում, 4 տակտը մեկ</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td class="legend-color" style="background-color:yellow"></td>
-            <td>Խոտակեր</td>
-            <td>Մոտակա 8 վանդակներում, էներգիան քչանում է 1֊ով</td>
-            <td>Խոտերին, մոտակա 8 վանդակներում, շարժվելիս էներգիան ավելանում է 1֊ով</td>
-            <td>Բազմանում է մոտակա տարածքներում, երբ էներգիան 10֊ից ավել է</td>
-            <td>Սատկում է, երբ էներգիան փոքր է 0֊ից</td>
-        </tr>
-        <tr>
-            <td class="legend-color" style="background-color:red"></td>
-            <td>Գիշատիչ</td>
-            <td>Մոտակա 8 վանդակներում, էներգիան քչանում է 1֊ով</td>
-            <td>Խոտակերներին, մոտակա 8 վանդակներում, շարժվելիս էներգիան ավելանում է 1֊ով</td>
-            <td>Բազմանում է մոտակա տարածքներում, երբ էներգիան 8֊ից ավել է</td>
-            <td>Սատկում է, երբ էներգիան փոքր է 0֊ից</td>
-        </tr>
-        <tr>
-            <td class="legend-color" style="background-color:rgb(40, 12, 161)"></td>
+                <th scope="row">2</th>
+                <td scope="row" style="background-color:blue;"></td>
             <td>Eater</td>
-            <td>Մոտակա 8 վանդակներում, էներգիան քչանում է 1֊ով</td>
-            <td>Գիշատիչին, խոտին, շարժվելիս էներգիան ավելանում է 2֊ով</td>
-            <td>Բազմանում է մոտակա տարածքներում, երբ էներգիան 8֊ից ավել է</td>
-            <td>Սատկում է, երբ էներգիան փոքր է 0֊ից</td>
+            <td></td>
+            
         </tr>
         <tr>
-            <td class="legend-color" style="background-color:rgb(11, 11, 12)"></td>
+                <th scope="row">2</th>
+                <td scope="row" style="background-color:black;"></td>
             <td>heroe</td>
-            <td>Մոտակա 8 վանդակներում, էներգիան քչանում է 1֊ով</td>
-            <td>խոտակերին, խոտին,Eater-ին շարժվելիս էներգիան ավելանում է 2֊ով</td>
-            <td>Բազմանում է մոտակա տարածքներում, երբ էներգիան 8֊ից ավել է</td>
-            <td>Սատկում է, երբ էներգիան փոքր է 0֊ից</td>
+            <td></td>
+           
         </tr>
     </table>
 </body>
@@ -96,3 +94,7 @@
 </body>
 
 </html>
+</tr>
+</tbody>
+</table>
+</body>
